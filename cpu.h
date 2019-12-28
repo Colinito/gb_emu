@@ -1,38 +1,48 @@
-/* CPU Registers */
-struct regs
-{
-	static int8_t A, F;
-	static int8_t B, C;
-	static int8_t D, E;
-	static int8_t H, L;
-	static int16_t SP;		// Stack pointer
-	static int16_t PC;		// Program counter
-};
-
-/*
-struct reg_16 // 16-bit register composed of hi and lo bytes
-{
-	int8_t hi;
-	int8_t lo;
-}
-*/
-
-static int16_t AF;
-static int16_t BC;
-static int16_t DE;
-static int16_t HL;
-static int16_t SP;
-static int16_t PC;
-
-enum arg_regs {A, F, AF, B, C, BC, D, E, DE, H, L, HL, SP, PC};
-
-
+/* instruction struct
+ *
+ * Only a few parameters differentiate most of the GameBoy's main instructions.
+ * Pre-defining these parameters in a table simplifies instruction decoding and
+ * maximizes code re-use as only a few instructions need to be actually
+ * implemented.
+ *
+ * Example:
+ * 	The GameBoy opcode table is composed of a lot of ld instructions. The
+ * 	instruction has the following syntax:
+ * 		ld dest, source.
+ *	
+ *	The dest and source registers or memory addresses are baked into the
+ *	opcode. Consider the following 2 instructions:
+ *		1. ld A, B
+ *		2. ld BC, D
+ *
+ *	The ld instruction does basically the same operation in both examples;
+ *	only the arguments are different. The same applies for other arithmetic
+ *	and logical instructions. It is much simpler to create a generic
+ *	instruction whose final operation is determined by its arguments.
+ */
 struct ins
 {
-	unsigned int bytes;
-	unsigned int cycles;
+	unsigned int bytes, cycles;
+	unsigned int *clock;
+	uint16_t *PC;
+	uint16_t *opA; // Pointer to modifiable register
+	uint16_t opB;  // Const register
+	uint16_t maskA, maskB; // Masks to select hi, lo, or both bytes
+
+	/* Operation to perform
+	 *
+	 * @bytes:	number of bytes instruction uses
+	 * @cycles:	number of cycles instruction uses
+	 * @clock:	clock cycle counter
+	 * @PC:		program counter register
+	 * @opA:	pointer to first operand register
+	 * @maskA:	mask to select hi, lo, or all bytes for opA
+	 * @opB:	second operand register
+	 * @maskB:	mask to select hi, lo, or all bytes for opB
+	 */
 	void (*operation) (unsigned int bytes, unsigned int cycles,
-			unsigned int operand_A, unsigned int operand_B);
+		unsigned int *clock, uint16_t *PC, uint16_t *opA,
+		uint16_t maskA, uint16_t opB, uint16_t maskB);
 };
 
 

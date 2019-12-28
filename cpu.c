@@ -1,21 +1,43 @@
-static void ld(int bytes, int cycles, int *arg_A, int *arg_B)
+/* CPU Registers */
+static int16_t AF; // Accumulator/Flags
+static int16_t BC;
+static int16_t DE;
+static int16_t HL;
+static int16_t SP; // Stack pointer
+static int16_t PC; // Program counter
+
+/* ld
+ *
+ * Loads value from second operand register into first operand register.
+ */
+static void *ld(unsigned int bytes, unsigned int cycles, unsigned int *clock,
+		uint16_t *PC, uint16_t *opA, uint16_t maskA, uint16_t opB,
+		uint16_t maskB)
 {
-	// Regular
-	*arg_A = *arg_B;
-
-	PC += cycles;
-	
-
-	// Immediate
-	if (bytes == 2)
-		*arg_A = read_byte(PC + 1);
-	else if (bytes == 3)
-		// GB is little-endian
-		*arg_A = (read_byte(PC + 2) << 8) | read_byte(PC + 1);
-
+	*opA = (*opA & maskA) | (opB & maskB);
+	*clock += cycles;
+	*PC += bytes;
 }
 
-static void nop(int bytes, int cycles, int *arg_A, int *arg_B)
+/* add
+ *
+ * Adds operands A and B together and stores the result in A.
+ */
+/*
+static void *add(unsigned int bytes, unsigned int cycles, unsigned int *clock,
+		uint16_t *PC, uint16_t *opA, uint16_t maskA, uint16_t opB,
+		uint16_t maskB)
 {
-	PC += cycles;
+	*opA = (*opA & maskA) | (opB & maskB);
+	*clock += cycles;
+	*PC += bytes;
+}
+*/
+
+static void *nop(unsigned int bytes, unsigned int cycles, unsigned int *clock,
+		uint16_t *PC, uint16_t *opA, uint16_t maskA, uint16_t opB,
+		uint16_t maskB)
+{
+	*clock += cycles;
+	*PC += bytes;
 }
