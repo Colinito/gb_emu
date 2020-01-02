@@ -1,113 +1,62 @@
 /* Register file */
 struct regs
 {
-	int16_t AF;
-	int16_t BC;
-	int16_t DE;
-	int16_t HL;
-	int16_t SP;
-	int16_t PC;
-	unsigned int clock;
+    union {struct {uint8_t F, A;} bytes; uint16_t AF;} AF;
+    union {struct {uint8_t C, B;} bytes; uint16_t BC;} BC;
+    union {struct {uint8_t E, D;} bytes; uint16_t DE;} DE;
+    union {struct {uint8_t L, H;} bytes; uint16_t HL;} HL;
+    uint16_t SP;
+    uint16_t PC;
+
+    // The clock is not an actual register in the GameBoy, but it is added here
+    // for timing and debugging.
+    unsigned int clk;
 };
 
-/* Operands grouped in 16-bit and 8-bit */
-enum operand {AF, BC, DE, HL, SP, PC, A, F, B, C, D, E, H, L, imm8, imm16}
+int8_t read_byte(uint8_t addr); // Get a byte from memory at address
+void advance_PC(struct regs *regfile, unsigned int bytes);
+void advance_clk(struct regs *regfile, unsigned int cycles);
 
-static int8_t read_byte(uint8_t addr); // Get a byte from memory at address
-
-/* Define Opcodes */
-static void nop(struct regs *regfile, unsigned int bytes, unsigned int cycles,
-		enum operand opA, enum operand opB);
-
-static void ld(struct regs *regfile, unsigned int bytes, unsigned int cycles,
-		enum operand opA, enum operand opB);
-
-static void add(struct regs *regfile, unsigned int bytes, unsigned int cycles,
-		enum operand opA, enum operand opB);
-
-static void adc(struct regs *regfile, unsigned int bytes, unsigned int cycles,
-		enum operand opA, enum operand opB);
-
-static void sub(struct regs *regfile, unsigned int bytes, unsigned int cycles,
-		enum operand opA, enum operand opB);
-
-static void sbc(struct regs *regfile, unsigned int bytes, unsigned int cycles,
-		enum operand opA, enum operand opB);
-
-static void and(struct regs *regfile, unsigned int bytes, unsigned int cycles,
-		enum operand opA, enum operand opB);
-
-static void or(struct regs *regfile, unsigned int bytes, unsigned int cycles,
-		enum operand opA, enum operand opB);
-
-static void xor(struct regs *regfile, unsigned int bytes, unsigned int cycles,
-		enum operand opA, enum operand opB);
-
-static void cp(struct regs *regfile, unsigned int bytes, unsigned int cycles,
-		enum operand opA, enum operand opB);
-
-static void cpl(struct regs *regfile, unsigned int bytes, unsigned int cycles,
-		enum operand opA, enum operand opB);
-
-static void ccf(struct regs *regfile, unsigned int bytes, unsigned int cycles,
-		enum operand opA, enum operand opB);
-
-static void inc(struct regs *regfile, unsigned int bytes, unsigned int cycles,
-		enum operand opA, enum operand opB);
-
-static void dec(struct regs *regfile, unsigned int bytes, unsigned int cycles,
-		enum operand opA, enum operand opB);
-
-static void push(struct regs *regfile, unsigned int bytes, unsigned int cycles,
-		enum operand opA, enum operand opB);
-
-static void pop(struct regs *regfile, unsigned int bytes, unsigned int cycles,
-		enum operand opA, enum operand opB);
-
-static void jp(struct regs *regfile, unsigned int bytes, unsigned int cycles,
-		enum operand opA, enum operand opB);
-
-static void jr(struct regs *regfile, unsigned int bytes, unsigned int cycles,
-		enum operand opA, enum operand opB);
-
-static void rlca(struct regs *regfile, unsigned int bytes, unsigned int cycles,
-		enum operand opA, enum operand opB);
-
-static void rla(struct regs *regfile, unsigned int bytes, unsigned int cycles,
-		enum operand opA, enum operand opB);
-
-static void rrca(struct regs *regfile, unsigned int bytes, unsigned int cycles,
-		enum operand opA, enum operand opB);
-
-static void rpa(struct regs *regfile, unsigned int bytes, unsigned int cycles,
-		enum operand opA, enum operand opB);
-
-static void daa(struct regs *regfile, unsigned int bytes, unsigned int cycles,
-		enum operand opA, enum operand opB);
-
-static void scf(struct regs *regfile, unsigned int bytes, unsigned int cycles,
-		enum operand opA, enum operand opB);
-
-static void halt(struct regs *regfile, unsigned int bytes, unsigned int cycles,
-		enum operand opA, enum operand opB);
-
-static void ret(struct regs *regfile, unsigned int bytes, unsigned int cycles,
-		enum operand opA, enum operand opB);
-
-static void reti(struct regs *regfile, unsigned int bytes, unsigned int cycles,
-		enum operand opA, enum operand opB);
-
-static void rst(struct regs *regfile, unsigned int bytes, unsigned int cycles,
-		enum operand opA, enum operand opB);
-
-static void call(struct regs *regfile, unsigned int bytes, unsigned int cycles,
-		enum operand opA, enum operand opB);
-
-static void di(struct regs *regfile, unsigned int bytes, unsigned int cycles,
-		enum operand opA, enum operand opB);
-
-static void ei(struct regs *regfile, unsigned int bytes, unsigned int cycles,
-		enum operand opA, enum operand opB);
+/* Define Opcodes 
+ *
+ * These are the core opcodes (non-CB prefixed). Not every single micro-
+ * operation is listed here. Instead, these are higher abstractions of the
+ * opcodes. For instance, there is no need to create a function to represent
+ * ld A, B. Instead, it is implemented by a ld function that accepts source
+ * and destination registers. Thus, it emulates all ld operations in just one
+ * function.
+ */
+void nop(uint16_t *dest, uint16_t src);
+void ld(uint16_t *dest, uint16_t src);
+void add(uint16_t *dest, uint16_t src);
+void adc(uint16_t *dest, uint16_t src);
+void sub(uint16_t *dest, uint16_t src);
+void sbc(uint16_t *dest, uint16_t src);
+void and(uint16_t *dest, uint16_t src);
+void or(uint16_t *dest, uint16_t src);
+void xor(uint16_t *dest, uint16_t src);
+void cp(uint16_t *dest, uint16_t src);
+void cpl(uint16_t *dest, uint16_t src);
+void ccf(uint16_t *dest, uint16_t src);
+void inc(uint16_t *dest, uint16_t src);
+void dec(uint16_t *dest, uint16_t src);
+void push(uint16_t *dest, uint16_t src);
+void pop(uint16_t *dest, uint16_t src);
+void jp(uint16_t *dest, uint16_t src);
+void jr(uint16_t *dest, uint16_t src);
+void rlca(uint16_t *dest, uint16_t src);
+void rla(uint16_t *dest, uint16_t src);
+void rrca(uint16_t *dest, uint16_t src);
+void rpa(uint16_t *dest, uint16_t src);
+void daa(uint16_t *dest, uint16_t src);
+void scf(uint16_t *dest, uint16_t src);
+void halt(uint16_t *dest, uint16_t src);
+void ret(uint16_t *dest, uint16_t src);
+void reti(uint16_t *dest, uint16_t src);
+void rst(uint16_t *dest, uint16_t src);
+void call(uint16_t *dest, uint16_t src);
+void di(uint16_t *dest, uint16_t src);
+void ei(uint16_t *dest, uint16_t src);
 
 /* instruction struct
  *
@@ -134,23 +83,15 @@ static void ei(struct regs *regfile, unsigned int bytes, unsigned int cycles,
 struct ins
 {
 	// Operation args
-	struct regs *regfile; // Register file
 	unsigned int bytes, cycles; // Number of bytes and cycles required
 
 	/* Operation to perform
 	 *
-	 * @bytes:	number of bytes instruction uses
-	 * @cycles:	number of cycles instruction uses
-	 * regfile:	pointer to system register file
-	 * @opA:	first operand register
-	 * @opB:	second operand register
+	 * @dest:	destination register
+	 * @src:	source register or immediate
 	 */
-	void (*operation) (unsigned int bytes, unsigned int cycles,
-			struct regs *regfile, enum operand opA,
-			enum operand opB)};
+	void (*operation) (uint16_t *dest, uint16_t src);
 
-	// Operands are placed here to make opcode obvious when declaring
-	// instructions
-	enum operand opA, opB; // Operands to use
+	uint16_t *dest; // Destination register
+	uint16_t src;	// Source register
 };
-

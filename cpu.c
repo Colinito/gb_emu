@@ -1,7 +1,8 @@
+struct regs regfile = {0, 0, 0, 0, 0, 0, 0};
 
 struct ins instrs[][] =
 {
-
+	{0}
 };
 
 // IF op starts with CB...
@@ -12,287 +13,171 @@ struct ins instrs_CB[][] =
 };
 
 
-static void nop(struct regs *regfile, unsigned int bytes, unsigned int cycles,
-		enum operand opA, enum operand opB)
+void nop(uint16_t *dest, uint16_t src)
 {
 	regfile->clock += cycles;
 	regfile->PC += bytes;
 }
 
-static void ld(struct regs *regfile, unsigned int bytes, unsigned int cycles,
-		enum operand opA, enum operand opB)
+void ld(uint16_t *dest, uint16_t src)
 {
-	int16_t *dest;
-	int16_t *source;
+	return;
+}
 
-	// Decode operands
-	switch(opB)
-	{
-		case AF:
-			source = regfile->AF;
-			break;
-		case BC:
-			source = regfile->BC;
-			break;
-		case DE:
-			source = regfile->DE;
-			break;
-		case HL:
-			source = regfile->HL;
-			break;
-		case SP:
-			source = regfile->SP;
-			break;
-		case PC:
-			source = regfile->PC;
-			break;
-		case A:
-			source = regfile->A;
-			break;
-		case F:
-			source = regfile->F;
-			break;
-		case B:
-			source = regfile->B;
-			break;
-		case C:
-			source = regfile->C;
-			break;
-		case D:
-			source = regfile->D;
-			break;
-		case E:
-			source = regfile->E;
-			break;
-		case H:
-			source = regfile->H;
-			break;
-		case L:
-			source = regfile->L;
-			break;
-		imm8:
-			source = read_byte(PC + 1);
-			break;
-		imm16:
-			source = ((int16_t) (read_byte(PC + 2) << 8)) +
-				read_byte(PC + 1);
-			break;
-		default:
-			break;
-	}
+void add(uint16_t *dest, uint16_t src)
+{
+	return;
+}
 
-	switch(opA)
-	{
-		case AF:
-			break;
-		case BC:
-			break;
-		case DE:
-			break;
-		case HL:
-			break;
-		case SP:
-			break;
-		case PC:
-			break;
-		case A:
-			break;
-		case F:
-			break;
-		case B:
-			break;
-		case C:
-			break;
-		case D:
-			break;
-		case E:
-			break;
-		case H:
-			break;
-		case L:
-			break;
-		imm:
-			break;
-		default:
-			break;
-	}
+void adc(uint16_t *dest, uint16_t src)
+{
+	return;
+}
 
+void sub(uint16_t *dest, uint16_t src)
+{
+	return;
+}
 
-	*opA = (*opA & maskA) | (opB & maskB);
-	*clock += cycles;
+void sbc(uint16_t *dest, uint16_t src)
+{
+	return;
+}
+
+void and(uint16_t *dest, uint16_t src)
+{
+	return;
+}
+
+void or(uint16_t *dest, uint16_t src)
+{
+	return;
+}
+
+void xor(uint16_t *dest, uint16_t src)
+{
+	return;
+}
+
+void cp(uint16_t *dest, uint16_t src)
+{
+	return;
+}
+
+void cpl(uint16_t *dest, uint16_t src)
+{
+	return;
+}
+
+void ccf(uint16_t *dest, uint16_t src)
+{
+	return;
+}
+
+void inc(uint16_t *dest, uint16_t src)
+{
+	return;
+}
+
+void dec(uint16_t *dest, uint16_t src)
+{
+	return;
+}
+
+void push(uint16_t *dest, uint16_t src)
+{
+	return;
+}
+
+void pop(uint16_t *dest, uint16_t src)
+{
+	return;
+}
+
+void jp(uint16_t *dest, uint16_t src)
+{
+	return;
+}
+
+void jr(uint16_t *dest, uint16_t src)
+{
+	return;
+}
+
+void rlca(uint16_t *dest, uint16_t src)
+{
+	return;
+}
+
+void rla(uint16_t *dest, uint16_t src)
+{
+	return;
+}
+
+void rrca(uint16_t *dest, uint16_t src)
+{
+	return;
+}
+
+void rpa(uint16_t *dest, uint16_t src)
+{
+	return;
+}
+
+void daa(uint16_t *dest, uint16_t src)
+{
+	return;
+}
+
+void scf(uint16_t *dest, uint16_t src)
+{
+	return;
+}
+
+void halt(uint16_t *dest, uint16_t src)
+{
+	return;
+}
+
+void ret(uint16_t *dest, uint16_t src)
+{
+	return;
+}
+
+void reti(uint16_t *dest, uint16_t src)
+{
+	return;
+}
+
+void rst(uint16_t *dest, uint16_t src)
+{
+	return;
+}
+
+void call(uint16_t *dest, uint16_t src)
+{
+	return;
+}
+
+void di(uint16_t *dest, uint16_t src)
+{
+	return;
+}
+
+void ei(uint16_t *dest, uint16_t src)
+{
+	return;
+}
+
+void advance_PC(uint16_t *PC, unsigned int bytes)
+{
 	*PC += bytes;
 }
 
-static void add(struct regs *regfile, unsigned int bytes, unsigned int cycles,
-		enum operand opA, enum operand opB)
+void advance_clk(unsigned int *clk, unsigned int cycles)
 {
-	return;
+	*clk += cycles;
 }
 
-static void adc(struct regs *regfile, unsigned int bytes, unsigned int cycles,
-		enum operand opA, enum operand opB)
-{
-	return;
-}
 
-static void sub(struct regs *regfile, unsigned int bytes, unsigned int cycles,
-		enum operand opA, enum operand opB)
-{
-	return;
-}
 
-static void sbc(struct regs *regfile, unsigned int bytes, unsigned int cycles,
-		enum operand opA, enum operand opB)
-{
-	return;
-}
-
-static void and(struct regs *regfile, unsigned int bytes, unsigned int cycles,
-		enum operand opA, enum operand opB)
-{
-	return;
-}
-
-static void or(struct regs *regfile, unsigned int bytes, unsigned int cycles,
-		enum operand opA, enum operand opB)
-{
-	return;
-}
-
-static void xor(struct regs *regfile, unsigned int bytes, unsigned int cycles,
-		enum operand opA, enum operand opB)
-{
-	return;
-}
-
-static void cp(struct regs *regfile, unsigned int bytes, unsigned int cycles,
-		enum operand opA, enum operand opB)
-{
-	return;
-}
-
-static void cpl(struct regs *regfile, unsigned int bytes, unsigned int cycles,
-		enum operand opA, enum operand opB)
-{
-	return;
-}
-
-static void ccf(struct regs *regfile, unsigned int bytes, unsigned int cycles,
-		enum operand opA, enum operand opB)
-{
-	return;
-}
-
-static void inc(struct regs *regfile, unsigned int bytes, unsigned int cycles,
-		enum operand opA, enum operand opB)
-{
-	return;
-}
-
-static void dec(struct regs *regfile, unsigned int bytes, unsigned int cycles,
-		enum operand opA, enum operand opB)
-{
-	return;
-}
-
-static void push(struct regs *regfile, unsigned int bytes, unsigned int cycles,
-		enum operand opA, enum operand opB)
-{
-	return;
-}
-
-static void pop(struct regs *regfile, unsigned int bytes, unsigned int cycles,
-		enum operand opA, enum operand opB)
-{
-	return;
-}
-
-static void jp(struct regs *regfile, unsigned int bytes, unsigned int cycles,
-		enum operand opA, enum operand opB)
-{
-	return;
-}
-
-static void jr(struct regs *regfile, unsigned int bytes, unsigned int cycles,
-		enum operand opA, enum operand opB)
-{
-	return;
-}
-
-static void rlca(struct regs *regfile, unsigned int bytes, unsigned int cycles,
-		enum operand opA, enum operand opB)
-{
-	return;
-}
-
-static void rla(struct regs *regfile, unsigned int bytes, unsigned int cycles,
-		enum operand opA, enum operand opB)
-{
-	return;
-}
-
-static void rrca(struct regs *regfile, unsigned int bytes, unsigned int cycles,
-		enum operand opA, enum operand opB)
-{
-	return;
-}
-
-static void rpa(struct regs *regfile, unsigned int bytes, unsigned int cycles,
-		enum operand opA, enum operand opB)
-{
-	return;
-}
-
-static void daa(struct regs *regfile, unsigned int bytes, unsigned int cycles,
-		enum operand opA, enum operand opB)
-{
-	return;
-}
-
-static void scf(struct regs *regfile, unsigned int bytes, unsigned int cycles,
-		enum operand opA, enum operand opB)
-{
-	return;
-}
-
-static void halt(struct regs *regfile, unsigned int bytes, unsigned int cycles,
-		enum operand opA, enum operand opB)
-{
-	return;
-}
-
-static void ret(struct regs *regfile, unsigned int bytes, unsigned int cycles,
-		enum operand opA, enum operand opB)
-{
-	return;
-}
-
-static void reti(struct regs *regfile, unsigned int bytes, unsigned int cycles,
-		enum operand opA, enum operand opB)
-{
-	return;
-}
-
-static void rst(struct regs *regfile, unsigned int bytes, unsigned int cycles,
-		enum operand opA, enum operand opB)
-{
-	return;
-}
-
-static void call(struct regs *regfile, unsigned int bytes, unsigned int cycles,
-		enum operand opA, enum operand opB)
-{
-	return;
-}
-
-static void di(struct regs *regfile, unsigned int bytes, unsigned int cycles,
-		enum operand opA, enum operand opB)
-{
-	return;
-}
-
-static void ei(struct regs *regfile, unsigned int bytes, unsigned int cycles,
-		enum operand opA, enum operand opB)
-{
-	return;
-}
