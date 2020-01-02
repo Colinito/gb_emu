@@ -57,6 +57,7 @@ void rst(uint16_t *dest, uint16_t src);
 void call(uint16_t *dest, uint16_t src);
 void di(uint16_t *dest, uint16_t src);
 void ei(uint16_t *dest, uint16_t src);
+void invalid(uint16_t *dest, uint16_t src);
 
 /* instruction struct
  *
@@ -84,6 +85,7 @@ struct ins
 {
 	// Operation args
 	unsigned int bytes, cycles; // Number of bytes and cycles required
+	enum {R, I} itype; // Instruction type - arithmetic or immediate
 
 	/* Operation to perform
 	 *
