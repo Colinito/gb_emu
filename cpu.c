@@ -1,177 +1,188 @@
 #include <stdio.h>
 
-void nop(uint16_t *dest, uint16_t src)
+// TODO: Set flags appropriately
+void nop(struct regs *regfile, uint16_t *dest, uint16_t *src)
 {
 	return;
 }
 
-void ld(uint16_t *dest, uint16_t src)
+void ld(struct regs *regfile, uint16_t *dest, uint16_t *src)
 {
-	*dest = src;
+	*dest = *src;
 }
 
-void add(uint16_t *dest, uint16_t src)
+void ldi(struct regs *regfile, uint16_t *dest, uint16_t *src)
 {
-	*dest += src;
+	*dest = *src;
+	regfile->HL.HL++;
 }
 
-void adc(uint16_t *dest, uint16_t src)
+void ldd(struct regs *regfile, uint16_t *dest, uint16_t *src)
 {
-	return;
+	*dest = *src;
+	regfile->HL.HL--;
 }
 
-void sub(uint16_t *dest, uint16_t src)
+void add(struct regs *regfile, uint16_t *dest, uint16_t *src)
 {
-	*dest -= src;
+	*dest += *src;
 }
 
-void sbc(uint16_t *dest, uint16_t src)
-{
-	return;
-}
-
-void and(uint16_t *dest, uint16_t src)
-{
-	*dest &= src;
-}
-
-void or(uint16_t *dest, uint16_t src)
-{
-	*dest |= src;
-}
-
-void xor(uint16_t *dest, uint16_t src)
-{
-	*dest ^= src;
-}
-
-void cp(uint16_t *dest, uint16_t src)
+void adc(struct regs *regfile, uint16_t *dest, uint16_t *src)
 {
 	return;
 }
 
-void cpl(uint16_t *dest, uint16_t src)
+void sub(struct regs *regfile, uint16_t *dest, uint16_t *src)
+{
+	*dest -= *src;
+}
+
+void sbc(struct regs *regfile, uint16_t *dest, uint16_t *src)
 {
 	return;
 }
 
-void ccf(uint16_t *dest, uint16_t src)
+void and(struct regs *regfile, uint16_t *dest, uint16_t *src)
+{
+	*dest &= *src;
+}
+
+void or(struct regs *regfile, uint16_t *dest, uint16_t *src)
+{
+	*dest |= *src;
+}
+
+void xor(struct regs *regfile, uint16_t *dest, uint16_t *src)
+{
+	*dest ^= *src;
+}
+
+//TODO: Finish implementing
+void cp(struct regs *regfile, uint16_t *dest, uint16_t *src)
+{
+	uint16_t diff = *dest - *src;
+	regfile->AF.bytes.F ^= (diff << 8);
+	return;
+}
+
+void cpl(struct regs *regfile, uint16_t *dest, uint16_t *src)
 {
 	return;
 }
 
-void inc(uint16_t *dest, uint16_t src)
+void ccf(struct regs *regfile, uint16_t *dest, uint16_t *src)
+{
+	return;
+}
+
+void inc(struct regs *regfile, uint16_t *dest, uint16_t *src)
 {
 	*dest++;
 }
 
-void dec(uint16_t *dest, uint16_t src)
+void dec(struct regs *regfile, uint16_t *dest, uint16_t *src)
 {
 	*dest--;
 }
 
-void push(uint16_t *dest, uint16_t src)
+void push(struct regs *regfile, uint16_t *dest, uint16_t *src)
+{
+	*dest = (uint8_t) (*src & 0x00ff);
+	dest--; // Pointer math - move mem pointer down to store next byte
+	*dest = (uint8_t) (*src >> 8);
+
+	regfile->SP -= 2;
+}
+
+void pop(struct regs *regfile, uint16_t *dest, uint16_t *src)
+{
+	regfile->SP += 2;
+	return;
+}
+
+void jp(struct regs *regfile, uint16_t *dest, uint16_t *src)
+{
+	*dest = *src;
+	return;
+}
+
+void jr(struct regs *regfile, uint16_t *dest, uint16_t *src)
 {
 	return;
 }
 
-void pop(uint16_t *dest, uint16_t src)
+void rlca(struct regs *regfile, uint16_t *dest, uint16_t *src)
 {
 	return;
 }
 
-void jp(uint16_t *dest, uint16_t src)
+void rla(struct regs *regfile, uint16_t *dest, uint16_t *src)
 {
 	return;
 }
 
-void jr(uint16_t *dest, uint16_t src)
+void rrca(struct regs *regfile, uint16_t *dest, uint16_t *src)
 {
 	return;
 }
 
-void rlca(uint16_t *dest, uint16_t src)
+void rpa(struct regs *regfile, uint16_t *dest, uint16_t *src)
 {
 	return;
 }
 
-void rla(uint16_t *dest, uint16_t src)
+void daa(struct regs *regfile, uint16_t *dest, uint16_t *src)
 {
 	return;
 }
 
-void rrca(uint16_t *dest, uint16_t src)
+void scf(struct regs *regfile, uint16_t *dest, uint16_t *src)
 {
 	return;
 }
 
-void rpa(uint16_t *dest, uint16_t src)
+void halt(struct regs *regfile, uint16_t *dest, uint16_t *src)
 {
 	return;
 }
 
-void daa(uint16_t *dest, uint16_t src)
+void ret(struct regs *regfile, uint16_t *dest, uint16_t *src)
 {
 	return;
 }
 
-void scf(uint16_t *dest, uint16_t src)
+void reti(struct regs *regfile, uint16_t *dest, uint16_t *src)
 {
 	return;
 }
 
-void halt(uint16_t *dest, uint16_t src)
+void rst(struct regs *regfile, uint16_t *dest, uint16_t *src)
 {
 	return;
 }
 
-void ret(uint16_t *dest, uint16_t src)
+void call(struct regs *regfile, uint16_t *dest, uint16_t *src)
 {
 	return;
 }
 
-void reti(uint16_t *dest, uint16_t src)
+void di(struct regs *regfile, uint16_t *dest, uint16_t *src)
 {
 	return;
 }
 
-void rst(uint16_t *dest, uint16_t src)
+void ei(struct regs *regfile, uint16_t *dest, uint16_t *src)
 {
 	return;
 }
 
-void call(uint16_t *dest, uint16_t src)
-{
-	return;
-}
-
-void di(uint16_t *dest, uint16_t src)
-{
-	return;
-}
-
-void ei(uint16_t *dest, uint16_t src)
-{
-	return;
-}
-
-void invalid(uint16_t *dest, uint16_t src)
+void invalid(struct regs *regfile, uint16_t *dest, uint16_t *src)
 {
 	printf("Error: invalid instruction\n");
 }
 
-void advance_PC(uint16_t *PC, unsigned int bytes)
-{
-	*PC += bytes;
-}
-
-void advance_clk(unsigned int *clk, unsigned int cycles)
-{
-	*clk += cycles;
-}
-
-
-
+//TODO: Split instructions into addressing modes
 // scribble of how interpreter will work
 void run()
 {
@@ -444,31 +455,39 @@ void run()
 	//{
 		//{0}
 	//};
+	//
 
-	// Interpreter
-	while(1)
+	if (byte == 0xcb)
 	{
-		uint8_t byte = read_byte(regfile.PC);
-		struct ins inst = instrs[byte];
-		switch(inst.itype)
+		// Do CB prefixed instructions
+	}
+	else
+	{
+		// Interpreter
+		while(1)
 		{
-			case R:
-				inst.operation(inst.dest, inst.src);
-				break;
-			case I8:
-				inst.operation(inst.dest, read_byte(PC+1));
-				break;
-			case I16:
-				inst.operation(inst.dest, read_byte(PC+1));
-				break;
-			case M8:
-				break;
-			case M16:
-				break;
-		}
+			uint8_t byte = read_byte(regfile.PC);
+			struct ins inst = instrs[byte];
+			switch(inst.itype)
+			{
+				case R:
+					inst.operation(inst.dest, inst.src);
+					break;
+				case I8:
+					inst.operation(inst.dest, read_byte(PC+1));
+					break;
+				case I16:
+					inst.operation(inst.dest, read_byte(PC+1));
+					break;
+				case M8:
+					break;
+				case M16:
+					break;
+			}
 
-		// Update PC and clock registers
-		regfile.PC += inst.bytes;
-		regfile.clk += inst.cycles;
+			// Update PC and clock registers
+			regfile.PC += inst.bytes;
+			regfile.clk += inst.cycles;
+		}
 	}
 }

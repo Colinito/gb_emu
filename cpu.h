@@ -26,38 +26,40 @@ void advance_clk(struct regs *regfile, unsigned int cycles);
  * and destination registers. Thus, it emulates all ld operations in just one
  * function.
  */
-void nop(uint16_t *dest, uint16_t src);
-void ld(uint16_t *dest, uint16_t src);
-void add(uint16_t *dest, uint16_t src);
-void adc(uint16_t *dest, uint16_t src);
-void sub(uint16_t *dest, uint16_t src);
-void sbc(uint16_t *dest, uint16_t src);
-void and(uint16_t *dest, uint16_t src);
-void or(uint16_t *dest, uint16_t src);
-void xor(uint16_t *dest, uint16_t src);
-void cp(uint16_t *dest, uint16_t src);
-void cpl(uint16_t *dest, uint16_t src);
-void ccf(uint16_t *dest, uint16_t src);
-void inc(uint16_t *dest, uint16_t src);
-void dec(uint16_t *dest, uint16_t src);
-void push(uint16_t *dest, uint16_t src);
-void pop(uint16_t *dest, uint16_t src);
-void jp(uint16_t *dest, uint16_t src);
-void jr(uint16_t *dest, uint16_t src);
-void rlca(uint16_t *dest, uint16_t src);
-void rla(uint16_t *dest, uint16_t src);
-void rrca(uint16_t *dest, uint16_t src);
-void rpa(uint16_t *dest, uint16_t src);
-void daa(uint16_t *dest, uint16_t src);
-void scf(uint16_t *dest, uint16_t src);
-void halt(uint16_t *dest, uint16_t src);
-void ret(uint16_t *dest, uint16_t src);
-void reti(uint16_t *dest, uint16_t src);
-void rst(uint16_t *dest, uint16_t src);
-void call(uint16_t *dest, uint16_t src);
-void di(uint16_t *dest, uint16_t src);
-void ei(uint16_t *dest, uint16_t src);
-void invalid(uint16_t *dest, uint16_t src);
+void nop(struct regs *regfile, uint16_t *dest, uint16_t *src);
+void ld(struct regs *regfile, uint16_t *dest, uint16_t *src);
+void ldi(struct regs *regfile, uint16_t *dest, uint16_t *src);
+void ldd(struct regs *regfile, uint16_t *dest, uint16_t *src);
+void add(struct regs *regfile, uint16_t *dest, uint16_t *src);
+void adc(struct regs *regfile, uint16_t *dest, uint16_t *src);
+void sub(struct regs *regfile, uint16_t *dest, uint16_t *src);
+void sbc(struct regs *regfile, uint16_t *dest, uint16_t *src);
+void and(struct regs *regfile, uint16_t *dest, uint16_t *src);
+void or(struct regs *regfile, uint16_t *dest, uint16_t *src);
+void xor(struct regs *regfile, uint16_t *dest, uint16_t *src);
+void cp(struct regs *regfile, uint16_t *dest, uint16_t *src);
+void cpl(struct regs *regfile, uint16_t *dest, uint16_t *src);
+void ccf(struct regs *regfile, uint16_t *dest, uint16_t *src);
+void inc(struct regs *regfile, uint16_t *dest, uint16_t *src);
+void dec(struct regs *regfile, uint16_t *dest, uint16_t *src);
+void push(struct regs *regfile, uint16_t *dest, uint16_t *src);
+void pop(struct regs *regfile, uint16_t *dest, uint16_t *src);
+void jp(struct regs *regfile, uint16_t *dest, uint16_t *src);
+void jr(struct regs *regfile, uint16_t *dest, uint16_t *src);
+void rlca(struct regs *regfile, uint16_t *dest, uint16_t *src);
+void rla(struct regs *regfile, uint16_t *dest, uint16_t *src);
+void rrca(struct regs *regfile, uint16_t *dest, uint16_t *src);
+void rpa(struct regs *regfile, uint16_t *dest, uint16_t *src);
+void daa(struct regs *regfile, uint16_t *dest, uint16_t *src);
+void scf(struct regs *regfile, uint16_t *dest, uint16_t *src);
+void halt(struct regs *regfile, uint16_t *dest, uint16_t *src);
+void ret(struct regs *regfile, uint16_t *dest, uint16_t *src);
+void reti(struct regs *regfile, uint16_t *dest, uint16_t *src);
+void rst(struct regs *regfile, uint16_t *dest, uint16_t *src);
+void call(struct regs *regfile, uint16_t *dest, uint16_t *src);
+void di(struct regs *regfile, uint16_t *dest, uint16_t *src);o
+void ei(struct regs *regfile, uint16_t *dest, uint16_t *src);
+void invalid(struct regs *regfile, uint16_t *dest, uint16_t *src);
 
 /* instruction struct
  *
@@ -90,10 +92,10 @@ struct ins
 	/* Operation to perform
 	 *
 	 * @dest:	destination register
-	 * @src:	source register or immediate
+	 * @*src:	source register or immediate
 	 */
-	void (*operation) (uint16_t *dest, uint16_t src);
+	void (*operation) (struct regs *regfile, uint16_t *dest, uint16_t *src);
 
 	uint16_t *dest; // Destination register
-	uint16_t src;	// Source register
+	uint16_t *src;	// Source register
 };
